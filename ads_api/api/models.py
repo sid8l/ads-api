@@ -10,9 +10,6 @@ class Ad(models.Model):
     def __str__(self):
         return self.title
 
-    def get_main_photo(self):
-        return self.photo_set[0]
-
 
 class Photo(models.Model):
     url = models.CharField(max_length=300)
