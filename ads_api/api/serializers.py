@@ -23,6 +23,11 @@ class AdSerializer(serializers.ModelSerializer):
         Photo.objects.bulk_create(photos_objects)
         return ad
 
+    def validate_photos(self, value):
+        if len(value) > 3:
+            raise serializers.ValidationError("Maximum 3 photo")
+        return value
+
 
 # class AdSerializer(serializers.ModelSerializer):
 #     main_photo = serializers.SerializerMethodField("get_main_photo")
