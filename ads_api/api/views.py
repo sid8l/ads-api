@@ -29,3 +29,17 @@ class AdViewSet(
 
     def perform_create(self, serializer):
         return serializer.save()
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        action = self.action
+
+        if action == "list":
+            context["fields"] = ["title", "price", "photos"]
+        elif action == "create":
+            context["fields"] = ["title", "description", "price", "photos"]
+        elif action == "retrieve":
+            context["fields"] = ["title", "price", "photos"]
+
+        return context
+

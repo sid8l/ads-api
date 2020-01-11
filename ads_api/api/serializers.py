@@ -28,17 +28,16 @@ class AdSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Maximum 3 photo")
         return value
 
+    def __init__(self, *args, **kwargs):
+        context = kwargs.get("context", None)
+        fields = None
+        if context:
+            fields = context.get("fields")
 
-# class AdSerializer(serializers.ModelSerializer):
-#     main_photo = serializers.SerializerMethodField("get_main_photo")
+        super().__init__(*args, **kwargs)
 
-#     class Meta:
-#         model = Ad
-#         fields = ("title", "price", "main_photo")
-
-#     def get_main_photo(self, ad):
-#         photo = Photo.objects.filter(ad=ad).first()
-#         if photo:
-#             return photo.url
-#         else:
-#             return 0
+        if fields is not None:
+            allowed = set(fields)
+            existing = set(self.fields)
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
