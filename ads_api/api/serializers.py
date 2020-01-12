@@ -11,10 +11,18 @@ class PhotoSerializer(serializers.ModelSerializer):
 
 class AdSerializer(serializers.ModelSerializer):
     photos = PhotoSerializer(many=True)
+    main_photo = serializers.SerializerMethodField(source="get_main_photo")
 
     class Meta:
         model = Ad
-        fields = ("title", "description", "price", "photos")
+        fields = ("title", "description", "price", "photos", "main_photo")
+
+    def get_main_photo(self, ad):
+        main_photo = Photo.objects.filter(ad=ad).first()
+        if main_photo is None:
+            return None
+        else:
+            return main_photo.url
 
     def create(self, validated_data):
         photos_data = validated_data.pop("photos")
@@ -23,10 +31,10 @@ class AdSerializer(serializers.ModelSerializer):
         Photo.objects.bulk_create(photos_objects)
         return ad
 
-    def validate_photos(self, value):
-        if len(value) > 3:
+    def validate_photos(self, photos):
+        if len(photos) > 3:
             raise serializers.ValidationError("Maximum 3 photo")
-        return value
+        return photos
 
     def __init__(self, *args, **kwargs):
         context = kwargs.get("context", None)

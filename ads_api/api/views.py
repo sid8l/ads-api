@@ -32,14 +32,20 @@ class AdViewSet(
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
+        custom_fields = context["request"].query_params.get("fields")
         action = self.action
 
+        default_read_fields = ["title", "price", "main_photo"]
+        default_write_fields = ["title", "description", "price", "photos"]
+
         if action == "list":
-            context["fields"] = ["title", "price", "photos"]
+            context["fields"] = default_read_fields
         elif action == "create":
-            context["fields"] = ["title", "description", "price", "photos"]
+            context["fields"] = default_write_fields
         elif action == "retrieve":
-            context["fields"] = ["title", "price", "photos"]
-
+            if custom_fields:
+                custom_fields = custom_fields.split(",")
+                context["fields"] = default_read_fields + custom_fields
+            else:
+                context["fields"] = default_read_fields
         return context
-
