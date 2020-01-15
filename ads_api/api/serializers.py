@@ -10,7 +10,7 @@ class PhotoSerializer(serializers.ModelSerializer):
 
 
 class AdSerializer(serializers.ModelSerializer):
-    photos = PhotoSerializer(many=True)
+    photos = PhotoSerializer(many=True, required=False)
     main_photo = serializers.SerializerMethodField(source="get_main_photo")
 
     class Meta:
@@ -25,7 +25,7 @@ class AdSerializer(serializers.ModelSerializer):
             return main_photo.url
 
     def create(self, validated_data):
-        photos_data = validated_data.pop("photos")
+        photos_data = validated_data.pop("photos", [])
         ad = Ad.objects.create(**validated_data)
         photos_objects = [Photo(ad=ad, url=photo.get("url")) for photo in photos_data]
         Photo.objects.bulk_create(photos_objects)

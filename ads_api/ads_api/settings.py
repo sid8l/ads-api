@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "OAKFJ(#Q@RT#@_RIAFSJDISIg43290twus-f9vfsjA(_(TJGQ#-)))"
+SECRET_KEY = "quzy%zwnk_3+_@lhs7mfzw21ofnxgguwr=xee7z$$u$^&f!95s"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -75,20 +75,14 @@ WSGI_APPLICATION = "ads_api.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql_psycopg2",
-#         "NAME": "postgres",
-#         "USER": "postgres",
-#         "HOST": "localhost",
-#         "PORT": "",
-#     }
-# }
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.environ.get("DATABASE", "adsdb"),
+        "USER": os.environ.get("DBUSER", "adsuser"),
+        "PASSWORD": os.environ.get("DBPASSWORD", "adspassword."),
+        "HOST": os.environ.get("DBHOST", "postgres"),
+        "PORT": os.environ.get("DBPORT", ""),
     }
 }
 

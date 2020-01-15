@@ -1,12 +1,18 @@
 version: '3'
 services:
   postgres:
+    build: ./postgres
     image: postgres
+    environment:
+      LC_ALL: C.UTF-8
+      POSTGRES_USER: adsuser
+      POSTGRES_PASSWORD: adspassword.
+      POSTGRES_DB: adsdb
     volumes:
      - pgdata:/var/lib/postgresql/data/  
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
